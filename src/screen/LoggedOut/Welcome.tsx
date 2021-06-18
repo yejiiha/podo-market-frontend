@@ -1,9 +1,9 @@
 import React from "react";
 import { StackNavigationProp } from "@react-navigation/stack";
 import styled from "styled-components/native";
-import { Container, Text } from "../theme/theme";
-import { LoggedOutStackNavParamList } from "../navigators/LoggedOutNav";
-import Button from "../components/Button";
+import { Container, Text } from "../../theme/theme";
+import { LoggedOutStackNavParamList } from "../../navigators/LoggedOutNav";
+import Button from "../../components/Button";
 
 type WelcomeNavigationProp = StackNavigationProp<
   LoggedOutStackNavParamList,
@@ -14,12 +14,12 @@ type Props = {
   navigation: WelcomeNavigationProp;
 };
 
-const WelcomeContainer = styled(Container)`
+export const WelcomeContainer = styled(Container)`
   padding: 10px;
   justify-content: space-around;
 `;
 
-const Row = styled.View`
+export const Row = styled.View`
   width: 100%;
   align-items: center;
 `;
@@ -48,7 +48,7 @@ function Welcome({ navigation }: Props) {
       <Row>
         <Logo
           resizeMode="contain"
-          source={require("../../assets/podo-market-logo.png")}
+          source={require("../../../assets/podo-market-logo.png")}
         />
         <SubTitle>우리 동네 중고 직거래 포도마켓</SubTitle>
         <SubTitle2>
@@ -58,18 +58,8 @@ function Welcome({ navigation }: Props) {
       </Row>
       <Row>
         <Button
-          text="둘러보기"
-          onPress={() => navigation.navigate("Home")}
-          isBorder
-        />
-        <Button
-          text="로그인하기"
-          onPress={() => navigation.navigate("LogIn")}
-        />
-        <Button
-          text="회원가입하기"
-          onPress={() => navigation.navigate("SignUp")}
-          isBorder
+          text="내 동네 설정하고 시작하기"
+          onPress={() => navigation.navigate("Position")}
         />
       </Row>
     </WelcomeContainer>

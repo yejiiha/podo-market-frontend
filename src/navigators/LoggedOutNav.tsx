@@ -1,18 +1,23 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import Welcome from "../screen/Welcome";
-import Home from "../screen/Home";
-import SignUp from "../screen/SignUp";
-import LogIn from "../screen/LogIn";
+import Welcome from "../screen/LoggedOut/Welcome";
+import Home from "../screen/LoggedIn/Home";
+import SignUp from "../screen/LoggedOut/SignUp";
+import LogIn from "../screen/LoggedOut/LogIn";
 import { useTheme } from "../theme/theme";
+import Position from "../screen/LoggedOut/Position";
 
 export type LoggedOutStackNavParamList = {
   Welcome: undefined;
+  Position: undefined;
   Home: undefined;
   LogIn?: {
-    phoneNumber?: any;
+    phoneNumber?: string;
+    location?: string;
   };
-  SignUp: undefined;
+  SignUp?: {
+    location?: string;
+  };
 };
 
 function LoggedOutNav() {
@@ -23,9 +28,9 @@ function LoggedOutNav() {
       screenOptions={{
         headerStyle: {
           backgroundColor: theme.theme.bgColor,
+          shadowOpacity: 0.3,
         },
         headerTintColor: theme.theme.textColor,
-        headerTransparent: true,
         headerBackTitleVisible: false,
         headerTitle: "",
       }}
@@ -34,6 +39,13 @@ function LoggedOutNav() {
         name="Welcome"
         component={Welcome}
         options={{ headerShown: false }}
+      />
+      <LoggedOutStack.Screen
+        name="Position"
+        component={Position}
+        options={{
+          headerTitle: "내 동네 설정하기",
+        }}
       />
       <LoggedOutStack.Screen name="Home" component={Home} />
       <LoggedOutStack.Screen

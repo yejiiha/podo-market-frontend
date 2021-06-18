@@ -3,28 +3,38 @@ import { useForm } from "react-hook-form";
 import styled from "styled-components/native";
 import { TextInput as Input } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import AuthLayout from "../components/AuthLayout";
-import { FatText, Text, TextInput, useTheme } from "../theme/theme";
-import Button from "../components/Button";
+import { RouteProp } from "@react-navigation/native";
+import AuthLayout from "../../components/AuthLayout";
+import { FatText, Text, TextInput, useTheme } from "../../theme/theme";
+import Button from "../../components/Button";
 import { NavigationBtn } from "./LogIn";
-import { LoggedOutStackNavParamList } from "../navigators/LoggedOutNav";
-import ErrorMessage from "../components/ErrorMessage";
+import { LoggedOutStackNavParamList } from "../../navigators/LoggedOutNav";
+import ErrorMessage from "../../components/ErrorMessage";
+import { onNext } from "../../components/onNext";
 
 type SignUpNavigationProp = StackNavigationProp<
   LoggedOutStackNavParamList,
   "SignUp"
 >;
+type SignUpRouteProp = RouteProp<LoggedOutStackNavParamList, "SignUp">;
 
 type Props = {
   navigation: SignUpNavigationProp;
+  route: SignUpRouteProp;
 };
+
+interface ISignUpForm {
+  username: string;
+  phoneNumber: string;
+  location?: string;
+}
 
 const TextContainer = styled.View`
   align-items: center;
   margin-bottom: 50px;
 `;
 
-function SignUp({ navigation }: Props) {
+function SignUp({ navigation, route }: Props) {
   const theme = useTheme();
   const [isUsernameFocused, setIsUsernameFocused] = useState(false);
   const [isNumberFocused, setIsNumberFocused] = useState(false);
@@ -35,19 +45,22 @@ function SignUp({ navigation }: Props) {
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm();
+  } = useForm<ISignUpForm>({
+    defaultValues: {
+      location: route?.params?.location,
+    },
+  });
 
+  const locationRef = useRef<Input>(null);
   const usernameRef = useRef<Input>(null);
   const phoneNumberRef = useRef<Input>(null);
 
-  const onNext = (nextOne: any) => {
-    nextOne?.current?.focus();
-  };
-
   const onValid = (data: any) => {
-    const { phoneNumber } = data;
+    const { location, username, phoneNumber } = data;
+    console.log(location, username, phoneNumber);
     navigation.navigate("LogIn", {
       phoneNumber,
+      location,
     });
   };
 
@@ -74,6 +87,16 @@ function SignUp({ navigation }: Props) {
         <Text>중고 거래부터 동네 정보까지, 이웃과 함께해요.</Text>
         <Text>가깝고 따뜻한 당신의 근처를 만들어요.</Text>
       </TextContainer>
+
+      <TextInput
+        placeholder="내 동네"
+        ref={locationRef}
+        editable={false}
+        onSubmitEditing={() => onNext(usernameRef)}
+        returnKeyType="next"
+        onChangeText={(text) => setValue("location", text)}
+        value={watch("location")}
+      />
 
       <TextInput
         placeholder="닉네임"
@@ -114,7 +137,11 @@ function SignUp({ navigation }: Props) {
         disabled={!watch("phoneNumber") || !watch("username")}
       />
 
-      <NavigationBtn onPress={() => navigation.navigate("LogIn")}>
+      <NavigationBtn
+        onPress={() =>
+          navigation.navigate("LogIn", { location: route?.params?.location })
+        }
+      >
         <Text>
           계정이 있나요? <FatText>로그인으로 이동</FatText>
         </Text>

@@ -12,7 +12,8 @@
     "strict": true,
     "target": "esnext",
     "skipLibCheck": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "typesRoots": ["./src/types"]
   },
   "exclude": [
     "node_modules",

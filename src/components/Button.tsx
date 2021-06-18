@@ -10,7 +10,11 @@ const SButton = styled.TouchableOpacity<ISButton>`
   border: ${(props) =>
     props.isBorder ? `1px solid ${props.theme.theme.podoColor}` : "0px"};
   background-color: ${(props) =>
-    props.isBorder ? props.theme.theme.bgColor : props.theme.theme.podoColor};
+    props.isBorder
+      ? props.theme.theme.bgColor
+      : props.isGray
+      ? props.theme.theme.darkGray
+      : props.theme.theme.podoColor};
   opacity: ${(props) => (props.disabled ? "0.5" : "1")};
 `;
 
@@ -27,11 +31,13 @@ interface IButton {
   disabled?: boolean;
   loading?: boolean;
   isBorder?: boolean;
+  isGray?: boolean;
 }
 
 interface ISButton {
   disabled?: boolean;
   isBorder?: boolean;
+  isGray?: boolean;
 }
 
 export default function Button({
@@ -40,9 +46,15 @@ export default function Button({
   disabled,
   loading,
   isBorder,
+  isGray,
 }: IButton) {
   return (
-    <SButton disabled={disabled} onPress={onPress} isBorder={isBorder}>
+    <SButton
+      disabled={disabled}
+      onPress={onPress}
+      isBorder={isBorder}
+      isGray={isGray}
+    >
       {loading ? (
         <ActivityIndicator color="white" />
       ) : (
