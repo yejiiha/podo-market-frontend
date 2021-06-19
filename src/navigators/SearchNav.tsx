@@ -6,9 +6,9 @@ import { useWindowDimensions } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "../theme/theme";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import SearchItem from "../screen/LoggedIn/SearchItem";
-import SearchUser from "../screen/LoggedIn/SearchUser";
-import SearchTown from "../screen/LoggedIn/SearchTown";
+import SearchItem from "../screen/LoggedIn/Search/SearchItem";
+import SearchUser from "../screen/LoggedIn/Search/SearchUser";
+import SearchTown from "../screen/LoggedIn/Search/SearchTown";
 
 type InputProps = {
   width: number;

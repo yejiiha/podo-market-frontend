@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import { TouchableOpacity } from "react-native";
-import { Ionicons, Feather } from "@expo/vector-icons";
+import { Ionicons, Feather, FontAwesome5 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { Container, Text, useTheme } from "../../theme/theme";
-import { HeaderRightContainer } from "./Home";
+import { HeaderRightContainer, UploadBtn } from "./Home";
 import usePosition from "../../components/usePosition";
 
 function TownLife() {
@@ -38,6 +38,9 @@ function TownLife() {
   return (
     <Container>
       <Text>TownLife Screen</Text>
+      <UploadBtn onPress={() => navigation.navigate("ItemUploadNav")}>
+        <FontAwesome5 name="pen" size={25} color="white" />
+      </UploadBtn>
     </Container>
   );
 }

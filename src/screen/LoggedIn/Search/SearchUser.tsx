@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Text } from "../../theme/theme";
+import { Container, Text } from "../../../theme/theme";
 
 function SearchUser() {
   return (

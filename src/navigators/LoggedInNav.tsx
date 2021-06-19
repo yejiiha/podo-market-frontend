@@ -1,17 +1,31 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import TabsNav from "./TabsNav";
-import SearchNav from "./SearchNav";
-import Category from "../screen/LoggedIn/Category";
-import Notification from "../screen/LoggedIn/Notification";
 import { useTheme } from "../theme/theme";
+import ItemUploadNav from "./ItemUploadNav";
+import PhotoNav from "./PhotoNav";
+import LoggedInMainNav from "./LoggedInMainNav";
+import ItemUpload from "../screen/LoggedIn/ItemUpload/ItemUpload";
+
+export type LoggedInNavParamList = {
+  LoggedInMainNav: undefined;
+  ItemUploadNav: {
+    localUri?: string;
+    takenPhoto?: string;
+  };
+  ItemUpload: {
+    localUri?: string;
+    takenPhoto?: string;
+  };
+  PhotoNav: undefined;
+};
 
 function LoggedInNav() {
-  const LoggeInStack = createStackNavigator();
+  const LoggeInStack = createStackNavigator<LoggedInNavParamList>();
   const theme = useTheme();
 
   return (
     <LoggeInStack.Navigator
+      mode="modal"
       screenOptions={{
         headerBackTitleVisible: false,
         headerStyle: {
@@ -21,29 +35,24 @@ function LoggedInNav() {
       }}
     >
       <LoggeInStack.Screen
-        name="TabsNav"
-        component={TabsNav}
+        name="LoggedInMainNav"
+        component={LoggedInMainNav}
         options={{ headerShown: false }}
       />
       <LoggeInStack.Screen
-        name="SearchNav"
-        component={SearchNav}
-        options={{
-          headerStyle: {
-            shadowOpacity: 0,
-            backgroundColor: theme.theme.bgColor,
-          },
-        }}
+        name="ItemUploadNav"
+        component={ItemUploadNav}
+        options={{ headerShown: false }}
       />
+      {/* <LoggeInStack.Screen
+        name="ItemUpload"
+        component={ItemUpload}
+        options={{ headerShown: false }}
+      /> */}
       <LoggeInStack.Screen
-        name="Category"
-        component={Category}
-        options={{ title: "카테고리" }}
-      />
-      <LoggeInStack.Screen
-        name="Notification"
-        component={Notification}
-        options={{ title: "알림" }}
+        name="PhotoNav"
+        component={PhotoNav}
+        options={{ headerShown: false }}
       />
     </LoggeInStack.Navigator>
   );

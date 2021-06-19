@@ -1,13 +1,25 @@
 import React, { useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native";
-import { Ionicons, Feather } from "@expo/vector-icons";
+import { Ionicons, Feather, Entypo } from "@expo/vector-icons";
 import styled from "styled-components/native";
 import { Container, Text, useTheme } from "../../theme/theme";
 import usePosition from "../../components/usePosition";
 
 export const HeaderRightContainer = styled.View`
   flex-direction: row;
+  align-items: center;
+`;
+
+export const UploadBtn = styled.TouchableOpacity`
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  width: 55px;
+  height: 55px;
+  border-radius: 30px;
+  background-color: ${(props) => props.theme.theme.podoColor};
+  justify-content: center;
   align-items: center;
 `;
 
@@ -49,6 +61,9 @@ function Home() {
   return (
     <Container>
       <Text>LoggedIn Home Screen</Text>
+      <UploadBtn onPress={() => navigation.navigate("ItemUploadNav")}>
+        <Entypo name="plus" size={40} color="white" />
+      </UploadBtn>
     </Container>
   );
 }
