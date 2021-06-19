@@ -1,12 +1,12 @@
 import React from "react";
 import { Container, Text } from "../../theme/theme";
 
-function Chat() {
+function SearchUser() {
   return (
     <Container>
-      <Text>Chat Screen</Text>
+      <Text>SearchUser Screen</Text>
     </Container>
   );
 }
 
-export default Chat;
+export default SearchUser;

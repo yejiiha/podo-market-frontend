@@ -10,6 +10,7 @@ import Button from "../../components/Button";
 import ErrorMessage from "../../components/ErrorMessage";
 import AuthLayout from "../../components/AuthLayout";
 import { onNext } from "../../components/onNext";
+import { logUserIn } from "../../../apollo";
 
 type LogInNavigationProp = StackNavigationProp<
   LoggedOutStackNavParamList,

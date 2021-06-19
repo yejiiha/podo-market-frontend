@@ -1,28 +1,30 @@
 import React, { useEffect } from "react";
-import { useNavigation } from "@react-navigation/native";
-import { TouchableOpacity } from "react-native";
+import { RouteProp } from "@react-navigation/native";
+import { TouchableOpacity, View } from "react-native";
 import { Ionicons, Feather } from "@expo/vector-icons";
-import styled from "styled-components/native";
 import { Container, Text, useTheme } from "../../theme/theme";
-import usePosition from "../../components/usePosition";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { LoggedOutStackNavParamList } from "../../navigators/LoggedOutNav";
 
-export const HeaderRightContainer = styled.View`
-  flex-direction: row;
-  align-items: center;
-`;
+type HomeNavigationProp = StackNavigationProp<
+  LoggedOutStackNavParamList,
+  "Home"
+>;
+type LogInRouteProp = RouteProp<LoggedOutStackNavParamList, "Home">;
+type Props = {
+  navigation: HomeNavigationProp;
+  route: LogInRouteProp;
+};
 
-function Home() {
-  const navigation = useNavigation();
+function Home({ navigation, route }: Props) {
   const theme = useTheme();
-  const {
-    data: { dong },
-  } = usePosition();
+  console.log(route?.params?.dong);
 
   useEffect(() => {
     navigation.setOptions({
-      headerTitle: `${dong}`,
+      headerTitle: `${route?.params?.dong}`,
       headerRight: () => (
-        <HeaderRightContainer>
+        <View style={{ flexDirection: "row" }}>
           <TouchableOpacity
             style={{ marginRight: 13 }}
             onPress={() => navigation.navigate("SearchNav")}
@@ -35,20 +37,13 @@ function Home() {
           >
             <Feather name="menu" size={25} color={theme.theme.textColor} />
           </TouchableOpacity>
-          <TouchableOpacity
-            style={{ marginRight: 20 }}
-            onPress={() => navigation.navigate("Notification")}
-          >
-            <Feather name="bell" size={24} color={theme.theme.textColor} />
-          </TouchableOpacity>
-        </HeaderRightContainer>
+        </View>
       ),
     });
   });
-
   return (
     <Container>
-      <Text>LoggedIn Home Screen</Text>
+      <Text>LoggedOut Home Screen</Text>
     </Container>
   );
 }

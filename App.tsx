@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useReactiveVar } from "@apollo/client";
 import { StatusBar, useColorScheme } from "react-native";
 import * as Font from "expo-font";
+import { Asset } from "expo-asset";
 import AppLoading from "expo-app-loading";
 import { Ionicons } from "@expo/vector-icons";
 import { AppearanceProvider } from "react-native-appearance";
@@ -11,7 +12,6 @@ import { isLoggedInVar } from "./apollo";
 import { darkTheme, lightTheme } from "./src/theme/theme";
 import LoggedInNav from "./src/navigators/LoggedInNav";
 import LoggedOutNav from "./src/navigators/LoggedOutNav";
-import { Asset } from "expo-asset";
 
 export default function App() {
   const mode = useColorScheme();
@@ -49,7 +49,7 @@ export default function App() {
           <StatusBar
             barStyle={mode === "light" ? "dark-content" : "light-content"}
           />
-          {isLoggedIn ? <LoggedInNav /> : <LoggedOutNav />}
+          {true ? <LoggedInNav /> : <LoggedOutNav />}
         </NavigationContainer>
       </ThemeProvider>
     </AppearanceProvider>
