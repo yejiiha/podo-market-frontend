@@ -28,28 +28,9 @@ interface ILoginForm {
   verifyNumber?: string;
 }
 
-const LoginHeader = styled.View`
-  flex-direction: row;
-  margin-bottom: 50px;
-  align-items: center;
-`;
-
-const LoginImoji = styled.Text`
-  font-size: 70px;
-  margin-right: 20px;
-`;
-
 const TextContainer = styled.View`
-  flex-direction: column;
-`;
-
-const VerifyContainer = styled.View`
-  margin-top: 20px;
-`;
-
-const AuthText = styled.Text`
-  color: ${(props) => props.theme.theme.darkGray};
-  font-size: 12px;
+  align-items: center;
+  margin-bottom: 50px;
 `;
 
 export const NavigationBtn = styled.TouchableOpacity`
@@ -60,8 +41,6 @@ export const NavigationBtn = styled.TouchableOpacity`
 function LogIn({ navigation, route }: Props) {
   const theme = useTheme();
   const [isFocused, setIsFocused] = useState(false);
-  const [isVerifyFocused, setIsVerifiedFocus] = useState(false);
-  const [isVerify, setIsVerify] = useState(false);
   const {
     register,
     watch,
@@ -77,14 +56,8 @@ function LogIn({ navigation, route }: Props) {
 
   const locationRef = useRef<Input>(null);
   const phoneNumberRef = useRef<Input>(null);
-  const verifyNumberRef = useRef<Input>(null);
 
   const onValid = (data: any) => {
-    setIsVerify(true);
-    onNext(verifyNumberRef);
-  };
-
-  const onVerifyValid = (data: any) => {
     console.log(data);
   };
 
@@ -95,28 +68,14 @@ function LogIn({ navigation, route }: Props) {
         message: "전화번호는 최소 11글자 이상 입력되어야 합니다.",
       },
     });
-    register("verifyNumber", {
-      minLength: {
-        value: 4,
-        message: "인증번호는 최소 4글자 이상 입력되어야 합니다.",
-      },
-    });
   }, [register]);
 
   return (
     <AuthLayout>
-      <LoginHeader>
-        <LoginImoji>🔒</LoginImoji>
-        <TextContainer>
-          <Text style={{ marginBottom: 5 }}>
-            당근마켓은 휴대폰 번호로 가입 해요.{" "}
-          </Text>
-          <Text style={{ marginBottom: 5 }}>
-            번호는<FatText> 안전하게 보관 </FatText>되며
-          </Text>
-          <Text style={{ marginBottom: 5 }}>어디에도 공개되지 않아요.</Text>
-        </TextContainer>
-      </LoginHeader>
+      <TextContainer>
+        <Text>중고 거래부터 동네 정보까지, 이웃과 함께해요.</Text>
+        <Text>가깝고 따뜻한 당신의 근처를 만들어요.</Text>
+      </TextContainer>
 
       <TextInput
         placeholder="내 동네"
@@ -145,39 +104,10 @@ function LogIn({ navigation, route }: Props) {
       <ErrorMessage message={errors?.phoneNumber?.message} />
 
       <Button
-        text="인증문자 받기"
+        text="로그인"
         onPress={handleSubmit(onValid)}
         disabled={!watch("phoneNumber")}
-        isGray
       />
-
-      {isVerify && (
-        <VerifyContainer>
-          <TextInput
-            placeholder="인증번호 입력"
-            ref={verifyNumberRef}
-            keyboardType="numeric"
-            onChangeText={(text) => setValue("verifyNumber", text)}
-            value={watch("verifyNumber")}
-            onFocus={() => setIsVerifiedFocus(true)}
-            onBlur={() => setIsVerifiedFocus(false)}
-            style={
-              isVerifyFocused
-                ? { borderColor: theme.theme.textColor }
-                : { borderColor: theme.theme.borderColor }
-            }
-          />
-
-          <ErrorMessage message={errors?.verifyNumber?.message} />
-          <AuthText>어떤 경우에도 타인에게 공유하지 마세요!</AuthText>
-
-          <Button
-            text="인증문자 확인"
-            onPress={handleSubmit(onVerifyValid)}
-            disabled={!watch("verifyNumber")}
-          />
-        </VerifyContainer>
-      )}
 
       <NavigationBtn
         onPress={() =>

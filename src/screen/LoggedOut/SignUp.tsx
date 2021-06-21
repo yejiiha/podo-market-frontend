@@ -27,17 +27,44 @@ interface ISignUpForm {
   username: string;
   phoneNumber: string;
   location?: string;
+  verifyNumber?: string;
 }
 
-const TextContainer = styled.View`
-  align-items: center;
+const SignUpHeader = styled.View`
+  flex-direction: row;
   margin-bottom: 50px;
+  align-items: center;
+`;
+
+const SignUpImoji = styled.Text`
+  font-size: 70px;
+  margin-right: 20px;
+`;
+
+const TextContainer = styled.View`
+  flex-direction: column;
+`;
+
+const VerifyContainer = styled.View`
+  margin-top: 20px;
+`;
+
+const UsernameContainer = styled(VerifyContainer)``;
+
+const AuthText = styled.Text`
+  color: ${(props) => props.theme.theme.darkGray};
+  font-size: 12px;
 `;
 
 function SignUp({ navigation, route }: Props) {
   const theme = useTheme();
   const [isUsernameFocused, setIsUsernameFocused] = useState(false);
   const [isNumberFocused, setIsNumberFocused] = useState(false);
+  const [isVerifyFocused, setIsVerifiedFocus] = useState(false);
+  const [isVerify, setIsVerify] = useState(false);
+  const [inputUsername, setInputUsername] = useState(false);
+
+  console.log(isVerify);
 
   const {
     register,
@@ -54,6 +81,17 @@ function SignUp({ navigation, route }: Props) {
   const locationRef = useRef<Input>(null);
   const usernameRef = useRef<Input>(null);
   const phoneNumberRef = useRef<Input>(null);
+  const verifyNumberRef = useRef<Input>(null);
+
+  const receiveAuthMessage = () => {
+    setIsVerify(true);
+    onNext(verifyNumberRef);
+  };
+
+  const checkVerifyMessage = () => {
+    setInputUsername(true);
+    onNext(usernameRef);
+  };
 
   const onValid = (data: any) => {
     const { location, username, phoneNumber } = data;
@@ -61,17 +99,11 @@ function SignUp({ navigation, route }: Props) {
     navigation.navigate("LogIn", {
       phoneNumber,
       location,
+      username,
     });
   };
 
   useEffect(() => {
-    register("username", {
-      required: "닉네임은 필수 사항입니다.",
-      minLength: {
-        value: 2,
-        message: "닉네임은 최소 2글자 이상 입력되어야 합니다.",
-      },
-    });
     register("phoneNumber", {
       required: "번호는 필수 사항입니다.",
       minLength: {
@@ -79,45 +111,49 @@ function SignUp({ navigation, route }: Props) {
         message: "전화번호는 최소 11글자 이상 입력되어야 합니다.",
       },
     });
+    register("verifyNumber", {
+      minLength: {
+        value: 4,
+        message: "인증번호는 최소 4글자 이상 입력되어야 합니다.",
+      },
+    });
+    register("username", {
+      minLength: {
+        value: 2,
+        message: "닉네임은 최소 2글자 이상 입력되어야 합니다.",
+      },
+    });
   }, [register]);
 
   return (
     <AuthLayout>
-      <TextContainer>
-        <Text>중고 거래부터 동네 정보까지, 이웃과 함께해요.</Text>
-        <Text>가깝고 따뜻한 당신의 근처를 만들어요.</Text>
-      </TextContainer>
+      <SignUpHeader>
+        <SignUpImoji>🔒</SignUpImoji>
+        <TextContainer>
+          <Text style={{ marginBottom: 5 }}>
+            당근마켓은 휴대폰 번호로 가입 해요.{" "}
+          </Text>
+          <Text style={{ marginBottom: 5 }}>
+            번호는<FatText> 안전하게 보관 </FatText>되며
+          </Text>
+          <Text style={{ marginBottom: 5 }}>어디에도 공개되지 않아요.</Text>
+        </TextContainer>
+      </SignUpHeader>
 
       <TextInput
         placeholder="내 동네"
         ref={locationRef}
         editable={false}
-        onSubmitEditing={() => onNext(usernameRef)}
+        onSubmitEditing={() => onNext(phoneNumberRef)}
         returnKeyType="next"
         onChangeText={(text) => setValue("location", text)}
         value={watch("location")}
       />
 
       <TextInput
-        placeholder="닉네임"
-        ref={usernameRef}
-        onSubmitEditing={() => onNext(phoneNumberRef)}
-        returnKeyType="next"
-        onChangeText={(text) => setValue("username", text)}
-        value={watch("username")}
-        onFocus={() => setIsUsernameFocused(true)}
-        onBlur={() => setIsUsernameFocused(false)}
-        style={
-          isUsernameFocused
-            ? { borderColor: theme.theme.textColor }
-            : { borderColor: theme.theme.borderColor }
-        }
-      />
-      <ErrorMessage message={errors?.username?.message} />
-
-      <TextInput
         placeholder="휴대폰 번호(- 없이 숫자만 입력)"
         ref={phoneNumberRef}
+        editable={isVerify ? false : true}
         keyboardType="numeric"
         onChangeText={(text) => setValue("phoneNumber", text)}
         value={watch("phoneNumber")}
@@ -132,10 +168,66 @@ function SignUp({ navigation, route }: Props) {
       <ErrorMessage message={errors?.phoneNumber?.message} />
 
       <Button
-        text="회원가입 하기"
-        onPress={handleSubmit(onValid)}
-        disabled={!watch("phoneNumber") || !watch("username")}
+        text="인증문자 받기"
+        onPress={handleSubmit(receiveAuthMessage)}
+        disabled={!watch("phoneNumber")}
+        isGray
       />
+
+      {isVerify && (
+        <VerifyContainer>
+          <TextInput
+            placeholder="인증번호 입력"
+            ref={verifyNumberRef}
+            editable={inputUsername ? false : true}
+            keyboardType="numeric"
+            onChangeText={(text) => setValue("verifyNumber", text)}
+            value={watch("verifyNumber")}
+            onFocus={() => setIsVerifiedFocus(true)}
+            onBlur={() => setIsVerifiedFocus(false)}
+            style={
+              isVerifyFocused
+                ? { borderColor: theme.theme.textColor }
+                : { borderColor: theme.theme.borderColor }
+            }
+          />
+
+          <ErrorMessage message={errors?.verifyNumber?.message} />
+          <AuthText>어떤 경우에도 타인에게 공유하지 마세요!</AuthText>
+
+          <Button
+            text="인증문자 확인"
+            onPress={handleSubmit(checkVerifyMessage)}
+            disabled={!watch("verifyNumber")}
+          />
+        </VerifyContainer>
+      )}
+
+      {inputUsername && (
+        <UsernameContainer>
+          <TextInput
+            placeholder="닉네임"
+            ref={usernameRef}
+            returnKeyType="done"
+            onChangeText={(text) => setValue("username", text)}
+            value={watch("username")}
+            onFocus={() => setIsUsernameFocused(true)}
+            onBlur={() => setIsUsernameFocused(false)}
+            style={
+              isUsernameFocused
+                ? { borderColor: theme.theme.textColor }
+                : { borderColor: theme.theme.borderColor }
+            }
+          />
+          <ErrorMessage message={errors?.username?.message} />
+
+          <Button
+            text="회원가입"
+            onPress={handleSubmit(onValid)}
+            disabled={!watch("username") || !watch("verifyNumber")}
+          />
+        </UsernameContainer>
+      )}
 
       <NavigationBtn
         onPress={() =>
