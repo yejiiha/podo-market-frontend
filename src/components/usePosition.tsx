@@ -8,6 +8,7 @@ function usePosition() {
   const SERVER =
     "http://api.vworld.kr/req/address?service=address&request=getAddress&version=2.0&crs=epsg:4326";
 
+  const [fetchData, setFetchData] = useState<any | null>(null);
   const [latitude, setLatitude] = useState<any | null>(null);
   const [longitude, setLongitude] = useState<any | null>(null);
   const [sido, setSido] = useState("Loading... ");
@@ -37,7 +38,7 @@ function usePosition() {
     .get(
       `${SERVER}&point=${longitude},${latitude}&type=both&zipcode=false&simple=true&key=${VWORLD_API_KEY}`
     )
-    .then(function (response) {
+    .then((response) => {
       if (response) {
         const sido = response.data.response.result[0].structure.level1;
         const city = response.data.response.result[0].structure.level2;
@@ -53,7 +54,7 @@ function usePosition() {
         }
       }
     })
-    .catch(function (error) {
+    .catch((error) => {
       console.log(error.message);
     });
 

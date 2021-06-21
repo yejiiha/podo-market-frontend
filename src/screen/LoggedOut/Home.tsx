@@ -18,7 +18,6 @@ type Props = {
 
 function Home({ navigation, route }: Props) {
   const theme = useTheme();
-  console.log(route?.params?.dong);
 
   useEffect(() => {
     navigation.setOptions({
@@ -40,7 +39,8 @@ function Home({ navigation, route }: Props) {
         </View>
       ),
     });
-  });
+  }, []);
+
   return (
     <Container>
       <Text>LoggedOut Home Screen</Text>

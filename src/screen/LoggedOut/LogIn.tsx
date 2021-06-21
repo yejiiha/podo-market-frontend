@@ -10,7 +10,9 @@ import Button from "../../components/Button";
 import ErrorMessage from "../../components/ErrorMessage";
 import AuthLayout from "../../components/AuthLayout";
 import { onNext } from "../../components/onNext";
-import { logUserIn } from "../../../apollo";
+import { BASE_URL, logUserIn } from "../../../apollo";
+import axios from "axios";
+import { Alert } from "react-native";
 
 type LogInNavigationProp = StackNavigationProp<
   LoggedOutStackNavParamList,
@@ -41,6 +43,7 @@ export const NavigationBtn = styled.TouchableOpacity`
 function LogIn({ navigation, route }: Props) {
   const theme = useTheme();
   const [isFocused, setIsFocused] = useState(false);
+  const [memberId, setMemberId] = useState(0);
   const {
     register,
     watch,
@@ -58,8 +61,29 @@ function LogIn({ navigation, route }: Props) {
   const phoneNumberRef = useRef<Input>(null);
 
   const onValid = (data: any) => {
-    console.log(data);
+    const { phoneNumber } = data;
+
+    axios
+      .get(`${BASE_URL}/login`, {
+        params: { phoneNumber },
+      })
+      .then((response) => {
+        const userId = response?.data;
+
+        if (userId) {
+          setMemberId(userId);
+        }
+      })
+      .catch((error) => {
+        console.log("⚠️", error);
+      });
   };
+
+  useEffect(() => {
+    if (memberId !== 0) {
+      Alert.alert(`${memberId} is logged in.`);
+    }
+  }, [memberId]);
 
   useEffect(() => {
     register("phoneNumber", {

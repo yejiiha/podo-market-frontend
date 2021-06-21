@@ -102,7 +102,7 @@ function SignUp({ navigation, route }: Props) {
       .get(`${BASE_URL}/sendSms`, {
         params: { phoneNumber },
       })
-      .then(function (response) {
+      .then((response) => {
         console.log("✅", response.data);
         const authNumber = response.data;
 
@@ -110,7 +110,7 @@ function SignUp({ navigation, route }: Props) {
           setAuthNumber(authNumber);
         }
       })
-      .catch(function (error) {
+      .catch((error) => {
         console.log("⚠️", error);
       });
   };
