@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import styled from "styled-components/native";
-import { TextInput as Input } from "react-native";
+import { Alert, TextInput as Input } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
 import AuthLayout from "../../components/AuthLayout";
@@ -11,6 +11,8 @@ import { NavigationBtn } from "./LogIn";
 import { LoggedOutStackNavParamList } from "../../navigators/LoggedOutNav";
 import ErrorMessage from "../../components/ErrorMessage";
 import { onNext } from "../../components/onNext";
+import axios from "axios";
+import { BASE_URL } from "../../../apollo";
 
 type SignUpNavigationProp = StackNavigationProp<
   LoggedOutStackNavParamList,
@@ -24,7 +26,7 @@ type Props = {
 };
 
 interface ISignUpForm {
-  username: string;
+  nickname: string;
   phoneNumber: string;
   location?: string;
   verifyNumber?: string;
@@ -49,7 +51,7 @@ const VerifyContainer = styled.View`
   margin-top: 20px;
 `;
 
-const UsernameContainer = styled(VerifyContainer)``;
+const NicknameContainer = styled(VerifyContainer)``;
 
 const AuthText = styled.Text`
   color: ${(props) => props.theme.theme.darkGray};
@@ -58,13 +60,12 @@ const AuthText = styled.Text`
 
 function SignUp({ navigation, route }: Props) {
   const theme = useTheme();
-  const [isUsernameFocused, setIsUsernameFocused] = useState(false);
+  const [isNicknameFocused, setIsNicknameFocused] = useState(false);
   const [isNumberFocused, setIsNumberFocused] = useState(false);
   const [isVerifyFocused, setIsVerifiedFocus] = useState(false);
   const [isVerify, setIsVerify] = useState(false);
-  const [inputUsername, setInputUsername] = useState(false);
-
-  console.log(isVerify);
+  const [inputNickname, setInputNickname] = useState(false);
+  const [authNumber, setAuthNumber] = useState("");
 
   const {
     register,
@@ -79,27 +80,76 @@ function SignUp({ navigation, route }: Props) {
   });
 
   const locationRef = useRef<Input>(null);
-  const usernameRef = useRef<Input>(null);
+  const nicknameRef = useRef<Input>(null);
   const phoneNumberRef = useRef<Input>(null);
   const verifyNumberRef = useRef<Input>(null);
 
-  const receiveAuthMessage = () => {
-    setIsVerify(true);
-    onNext(verifyNumberRef);
+  let axiosConfig = {
+    headers: {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+    },
   };
 
-  const checkVerifyMessage = () => {
-    setInputUsername(true);
-    onNext(usernameRef);
+  const receiveAuthMessage = (data: any) => {
+    const { phoneNumber } = data;
+    console.log(phoneNumber);
+
+    setIsVerify(true);
+    onNext(verifyNumberRef);
+
+    axios
+      .get(`${BASE_URL}/sendSms`, {
+        params: { phoneNumber },
+      })
+      .then(function (response) {
+        console.log("✅", response.data);
+        const authNumber = response.data;
+
+        if (authNumber) {
+          setAuthNumber(authNumber);
+        }
+      })
+      .catch(function (error) {
+        console.log("⚠️", error);
+      });
+  };
+
+  const checkVerifyMessage = (data: any) => {
+    const { verifyNumber } = data;
+
+    if (Number(authNumber) === Number(verifyNumber)) {
+      Alert.alert("인증 되었습니다.");
+      setInputNickname(true);
+      onNext(nicknameRef);
+    } else {
+      Alert.alert("인증에 실패하였습니다.");
+    }
   };
 
   const onValid = (data: any) => {
-    const { location, username, phoneNumber } = data;
-    console.log(location, username, phoneNumber);
+    const { location, nickname, phoneNumber } = data;
+    console.log(location, nickname, phoneNumber);
+
+    const postData = {
+      location: location,
+      nickname: nickname,
+      phoneNumber: phoneNumber,
+    };
+
+    axios
+      .post(`${BASE_URL}/register`, postData, axiosConfig)
+      .then(function (response) {
+        console.log("✅", response);
+      })
+      .catch(function (error) {
+        console.log("⚠️", error);
+      });
+
     navigation.navigate("LogIn", {
       phoneNumber,
       location,
-      username,
+      nickname,
     });
   };
 
@@ -117,7 +167,7 @@ function SignUp({ navigation, route }: Props) {
         message: "인증번호는 최소 4글자 이상 입력되어야 합니다.",
       },
     });
-    register("username", {
+    register("nickname", {
       minLength: {
         value: 2,
         message: "닉네임은 최소 2글자 이상 입력되어야 합니다.",
@@ -179,7 +229,7 @@ function SignUp({ navigation, route }: Props) {
           <TextInput
             placeholder="인증번호 입력"
             ref={verifyNumberRef}
-            editable={inputUsername ? false : true}
+            editable={inputNickname ? false : true}
             keyboardType="numeric"
             onChangeText={(text) => setValue("verifyNumber", text)}
             value={watch("verifyNumber")}
@@ -203,30 +253,30 @@ function SignUp({ navigation, route }: Props) {
         </VerifyContainer>
       )}
 
-      {inputUsername && (
-        <UsernameContainer>
+      {inputNickname && (
+        <NicknameContainer>
           <TextInput
             placeholder="닉네임"
-            ref={usernameRef}
+            ref={nicknameRef}
             returnKeyType="done"
-            onChangeText={(text) => setValue("username", text)}
-            value={watch("username")}
-            onFocus={() => setIsUsernameFocused(true)}
-            onBlur={() => setIsUsernameFocused(false)}
+            onChangeText={(text) => setValue("nickname", text)}
+            value={watch("nickname")}
+            onFocus={() => setIsNicknameFocused(true)}
+            onBlur={() => setIsNicknameFocused(false)}
             style={
-              isUsernameFocused
+              isNicknameFocused
                 ? { borderColor: theme.theme.textColor }
                 : { borderColor: theme.theme.borderColor }
             }
           />
-          <ErrorMessage message={errors?.username?.message} />
+          <ErrorMessage message={errors?.nickname?.message} />
 
           <Button
             text="회원가입"
             onPress={handleSubmit(onValid)}
-            disabled={!watch("username") || !watch("verifyNumber")}
+            disabled={!watch("nickname") || !watch("verifyNumber")}
           />
-        </UsernameContainer>
+        </NicknameContainer>
       )}
 
       <NavigationBtn

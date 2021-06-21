@@ -18,7 +18,7 @@ export type LoggedOutStackNavParamList = {
   LogIn?: {
     phoneNumber?: string;
     location?: string;
-    username?: string;
+    nickname?: string;
   };
   SignUp?: {
     location?: string;
