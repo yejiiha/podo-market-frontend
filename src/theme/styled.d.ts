@@ -12,6 +12,7 @@ declare module "styled-components" {
       btnTextColor: string;
       podoColor: string;
       closeBtnColor: string;
+      lightPodoColor: string;
     };
   }
 }

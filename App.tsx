@@ -49,7 +49,7 @@ export default function App() {
           <StatusBar
             barStyle={mode === "light" ? "dark-content" : "light-content"}
           />
-          {false ? <LoggedInNav /> : <LoggedOutNav />}
+          {true ? <LoggedInNav /> : <LoggedOutNav />}
         </NavigationContainer>
       </ThemeProvider>
     </AppearanceProvider>

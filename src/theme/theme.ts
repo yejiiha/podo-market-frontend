@@ -13,6 +13,7 @@ export const darkTheme: DefaultTheme = {
     btnTextColor: "white",
     podoColor: "#a675dd",
     closeBtnColor: "rgba(255,255,255,0.6)",
+    lightPodoColor: "#F2EBFA",
   },
 };
 
@@ -27,6 +28,7 @@ export const lightTheme: DefaultTheme = {
     btnTextColor: "white",
     podoColor: "#a675dd",
     closeBtnColor: "rgba(38,38,38,0.6)",
+    lightPodoColor: "#F2EBFA",
   },
 };
 
