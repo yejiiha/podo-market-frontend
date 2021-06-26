@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { NavigationProp } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native";
 import { Ionicons, FontAwesome, SimpleLineIcons } from "@expo/vector-icons";
 import styled from "styled-components/native";
-import axios from "axios";
 import { Text, useTheme } from "../../theme/theme";
-import { BASE_URL } from "../../../apollo";
 import { useState } from "react";
 import { StackNavFactoryParamList } from "../../navigators/StackNavFactory";
+import instance, { TOKEN } from "../../../axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface IMyPodo {
   navigation: NavigationProp<StackNavFactoryParamList>;
@@ -101,18 +101,30 @@ function MyPodo({ navigation }: IMyPodo) {
   const [createdDate, setCreateDate] = useState("");
   const [location, setLocation] = useState("");
 
-  axios
-    .get(`${BASE_URL}/members/1`)
-    .then((response) => {
+  const getData = async () => {
+    try {
+      const token = await AsyncStorage.getItem(TOKEN);
+      return await instance.get(`/members/1`, {
+        headers: {
+          Authorization: token,
+        },
+      });
+    } catch (error) {
+      console.log("⚠️", error);
+    }
+  };
+
+  const processData = () => {
+    getData().then((response) => {
       const data = response?.data;
 
       setNickname(data.nickname);
       setLocation(data.location);
       setCreateDate(data.createdDate);
-    })
-    .catch((error) => {
-      console.log("⚠️", error);
     });
+  };
+
+  processData();
 
   useEffect(() => {
     navigation.setOptions({
@@ -139,7 +151,11 @@ function MyPodo({ navigation }: IMyPodo) {
         </UserContainer>
         <GoToProfileBtn
           onPress={() =>
-            navigation.navigate("Profile", { nickname, createdDate, location })
+            navigation.navigate("Profile", {
+              nickname,
+              createdDate,
+              location,
+            })
           }
         >
           <BtnText>프로필 보기</BtnText>

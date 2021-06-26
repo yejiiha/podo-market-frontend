@@ -90,7 +90,13 @@ function Profile({ navigation, route }: IProfile) {
             <Dong>#1232</Dong>
           </UsernameContainer>
         </UserContainer>
-        <GoToProfileEditBtn>
+        <GoToProfileEditBtn
+          onPress={() =>
+            navigation.navigate("EditProfile", {
+              nickname,
+            })
+          }
+        >
           <BtnText>프로필 수정</BtnText>
         </GoToProfileEditBtn>
         <MannerTempContainer>

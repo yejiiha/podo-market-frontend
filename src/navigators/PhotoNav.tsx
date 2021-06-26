@@ -1,14 +1,19 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, FontAwesome } from "@expo/vector-icons";
 import { useTheme } from "../theme/theme";
 import SelectPhoto from "../screen/LoggedIn/ItemUpload/Photo/SelectPhoto";
 import TakePhoto from "../screen/LoggedIn/ItemUpload/Photo/TakePhoto";
 
+type IPhotoNav = {
+  Select: undefined;
+  TakePhoto: undefined;
+};
+
 function PhotoNav() {
   const Stack = createStackNavigator();
-  const Tab = createBottomTabNavigator();
+  const Tab = createBottomTabNavigator<IPhotoNav>();
   const theme = useTheme();
   return (
     <Tab.Navigator
@@ -21,7 +26,14 @@ function PhotoNav() {
         activeTintColor: theme.theme.podoColor,
       }}
     >
-      <Tab.Screen name="Select">
+      <Tab.Screen
+        name="Select"
+        options={{
+          tabBarIcon: ({ color }) => (
+            <FontAwesome name="photo" size={24} color={color} />
+          ),
+        }}
+      >
         {() => (
           <Stack.Navigator
             screenOptions={{
@@ -49,7 +61,12 @@ function PhotoNav() {
       <Tab.Screen
         name="TakePhoto"
         component={TakePhoto}
-        options={{ tabBarVisible: false }}
+        options={{
+          tabBarVisible: false,
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="camera" size={24} color={color} />
+          ),
+        }}
       />
     </Tab.Navigator>
   );

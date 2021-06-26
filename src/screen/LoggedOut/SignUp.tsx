@@ -11,8 +11,7 @@ import { NavigationBtn } from "./LogIn";
 import { LoggedOutStackNavParamList } from "../../navigators/LoggedOutNav";
 import ErrorMessage from "../../components/ErrorMessage";
 import { onNext } from "../../components/onNext";
-import axios from "axios";
-import { BASE_URL } from "../../../apollo";
+import instance from "../../../axios";
 
 type SignUpNavigationProp = StackNavigationProp<
   LoggedOutStackNavParamList,
@@ -98,8 +97,8 @@ function SignUp({ navigation, route }: Props) {
     setIsVerify(true);
     onNext(verifyNumberRef);
 
-    axios
-      .get(`${BASE_URL}/sendSms`, {
+    instance
+      .get(`/sendSms`, {
         params: { phoneNumber },
       })
       .then((response) => {
@@ -137,8 +136,8 @@ function SignUp({ navigation, route }: Props) {
       phoneNumber: phoneNumber,
     };
 
-    axios
-      .post(`${BASE_URL}/register`, postData, axiosConfig)
+    instance
+      .post(`/register`, postData, axiosConfig)
       .then(function (response) {
         console.log("✅", response);
       })

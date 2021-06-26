@@ -10,9 +10,8 @@ import Button from "../../components/Button";
 import ErrorMessage from "../../components/ErrorMessage";
 import AuthLayout from "../../components/AuthLayout";
 import { onNext } from "../../components/onNext";
-import { BASE_URL, logUserIn } from "../../../apollo";
-import axios from "axios";
 import { Alert } from "react-native";
+import instance, { logUserIn } from "../../../axios";
 
 type LogInNavigationProp = StackNavigationProp<
   LoggedOutStackNavParamList,
@@ -63,15 +62,16 @@ function LogIn({ navigation, route }: Props) {
   const onValid = (data: any) => {
     const { phoneNumber } = data;
 
-    axios
-      .get(`${BASE_URL}/login`, {
+    instance
+      .get(`/login`, {
         params: { phoneNumber },
       })
-      .then((response) => {
-        const userId = response?.data;
+      .then(async (response) => {
+        const { memberId, token } = response?.data;
 
-        if (userId) {
-          setMemberId(userId);
+        if (memberId) {
+          setMemberId(memberId);
+          await logUserIn(token);
         }
       })
       .catch((error) => {

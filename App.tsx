@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useReactiveVar } from "@apollo/client";
 import { StatusBar, useColorScheme } from "react-native";
 import * as Font from "expo-font";
 import { Asset } from "expo-asset";
@@ -8,15 +7,17 @@ import { Ionicons } from "@expo/vector-icons";
 import { AppearanceProvider } from "react-native-appearance";
 import { ThemeProvider } from "styled-components";
 import { NavigationContainer } from "@react-navigation/native";
-import { isLoggedInVar } from "./apollo";
 import { darkTheme, lightTheme } from "./src/theme/theme";
 import LoggedInNav from "./src/navigators/LoggedInNav";
 import LoggedOutNav from "./src/navigators/LoggedOutNav";
+import { useReactiveVar } from "@apollo/client";
+import { isLoggedInVar, TOKEN } from "./axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function App() {
   const mode = useColorScheme();
-  const isLoggedIn = useReactiveVar(isLoggedInVar);
   const [loading, setLoading] = useState(true);
+  const isLoggedIn = useReactiveVar(isLoggedInVar);
 
   const onFinish = () => setLoading(false);
 
@@ -29,6 +30,10 @@ export default function App() {
   };
 
   const preload = async () => {
+    const token = await AsyncStorage.getItem(TOKEN);
+    if (token) {
+      isLoggedInVar(true);
+    }
     await preloadAssets;
   };
 
@@ -49,7 +54,7 @@ export default function App() {
           <StatusBar
             barStyle={mode === "light" ? "dark-content" : "light-content"}
           />
-          {true ? <LoggedInNav /> : <LoggedOutNav />}
+          {isLoggedIn ? <LoggedInNav /> : <LoggedOutNav />}
         </NavigationContainer>
       </ThemeProvider>
     </AppearanceProvider>
