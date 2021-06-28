@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { RouteProp } from "@react-navigation/native";
+import { NavigationProp, RouteProp } from "@react-navigation/native";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import styled from "styled-components/native";
@@ -8,10 +8,13 @@ import { Avatar } from "../MyPodo";
 import { TextInput, useTheme } from "../../../theme/theme";
 import ErrorMessage from "../../../components/ErrorMessage";
 import { DismissKeyboard } from "../../../components/DismissKeyboard";
-import { KeyboardAvoidingView, Platform } from "react-native";
+import { Alert, KeyboardAvoidingView, Platform } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import instance, { TOKEN } from "../../../../axios";
 
 interface IEditProfile {
   route: RouteProp<StackNavFactoryParamList, "EditProfile">;
+  navigation: NavigationProp<StackNavFactoryParamList, "EditProfile">;
 }
 
 const Container = styled.View`
@@ -57,9 +60,10 @@ const SubmitBtnText = styled.Text`
   font-size: 16px;
 `;
 
-function EditProfile({ route }: IEditProfile) {
+function EditProfile({ navigation, route }: IEditProfile) {
   const theme = useTheme();
   const nickname = route.params.nickname;
+  const memberId = route.params.memberId;
   const [isFocused, setIsFocused] = useState(false);
 
   const {
@@ -74,9 +78,30 @@ function EditProfile({ route }: IEditProfile) {
     },
   });
 
-  const onValid = (data: any) => {
+  const onValid = async (data: any) => {
     const { nickname } = data;
-    console.log(nickname);
+    const token = await AsyncStorage.getItem(TOKEN);
+
+    instance
+      .put(
+        `/members/${memberId}`,
+        { nickname },
+        {
+          headers: {
+            Authorization: token,
+          },
+        }
+      )
+      .then((response) => {
+        const memberId = response?.data;
+
+        if (memberId) {
+          Alert.alert("프로필이 변경되었습니다.");
+        }
+      })
+      .catch((error) => {
+        console.log("⚠️", error);
+      });
   };
 
   useEffect(() => {

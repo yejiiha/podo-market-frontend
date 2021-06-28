@@ -67,6 +67,7 @@ function Profile({ navigation, route }: IProfile) {
   const nickname = route.params.nickname;
   const createdDate = route.params.createdDate;
   const location = route.params.location;
+  const memberId = route.params.memberId;
 
   const getDate = (createdDate: string) => {
     const year = createdDate.substring(0, 4);
@@ -94,6 +95,7 @@ function Profile({ navigation, route }: IProfile) {
           onPress={() =>
             navigation.navigate("EditProfile", {
               nickname,
+              memberId,
             })
           }
         >

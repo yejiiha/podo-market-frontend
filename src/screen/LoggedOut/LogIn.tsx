@@ -11,7 +11,7 @@ import ErrorMessage from "../../components/ErrorMessage";
 import AuthLayout from "../../components/AuthLayout";
 import { onNext } from "../../components/onNext";
 import { Alert } from "react-native";
-import instance, { logUserIn } from "../../../axios";
+import { logoutInstance, logUserIn } from "../../../axios";
 
 type LogInNavigationProp = StackNavigationProp<
   LoggedOutStackNavParamList,
@@ -62,7 +62,7 @@ function LogIn({ navigation, route }: Props) {
   const onValid = (data: any) => {
     const { phoneNumber } = data;
 
-    instance
+    logoutInstance
       .get(`/login`, {
         params: { phoneNumber },
       })

@@ -97,7 +97,7 @@ const IconLabel = styled(Text)`
 function MyPodo({ navigation }: IMyPodo) {
   const theme = useTheme();
   const [nickname, setNickname] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [memberId, setMemberId] = useState(0);
   const [createdDate, setCreateDate] = useState("");
   const [location, setLocation] = useState("");
 
@@ -119,6 +119,7 @@ function MyPodo({ navigation }: IMyPodo) {
       const data = response?.data;
 
       setNickname(data.nickname);
+      setMemberId(data.memberId);
       setLocation(data.location);
       setCreateDate(data.createdDate);
     });
@@ -155,6 +156,7 @@ function MyPodo({ navigation }: IMyPodo) {
               nickname,
               createdDate,
               location,
+              memberId,
             })
           }
         >

@@ -17,6 +17,14 @@ export const logUserOut = async () => {
   isLoggedInVar(false);
 };
 
+export const logoutInstance = axios.create({
+  baseURL: `http://${IP_ADDRESS}:8090`,
+  headers: {
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*",
+  },
+});
+
 const instance = axios.create({
   baseURL: `http://${IP_ADDRESS}:8090`,
   headers: {
