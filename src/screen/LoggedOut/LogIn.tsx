@@ -71,7 +71,7 @@ function LogIn({ navigation, route }: Props) {
 
         if (memberId) {
           setMemberId(memberId);
-          await logUserIn(token);
+          await logUserIn(token, memberId);
         }
       })
       .catch((error) => {

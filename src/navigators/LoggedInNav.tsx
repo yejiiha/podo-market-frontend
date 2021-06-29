@@ -1,9 +1,11 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
+import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "../theme/theme";
 import ItemUploadNav from "./ItemUploadNav";
 import PhotoNav from "./PhotoNav";
 import LoggedInMainNav from "./LoggedInMainNav";
+import UserDrop from "../screen/LoggedIn/MyPodo/UserDrop";
 
 export type LoggedInNavParamList = {
   LoggedInMainNav: undefined;
@@ -16,6 +18,10 @@ export type LoggedInNavParamList = {
     takenPhoto?: string;
   };
   PhotoNav: undefined;
+  UserDrop: {
+    memberId: number;
+    nickname: string;
+  };
 };
 
 function LoggedInNav() {
@@ -47,6 +53,21 @@ function LoggedInNav() {
         name="PhotoNav"
         component={PhotoNav}
         options={{ headerShown: false }}
+      />
+      <LoggeInStack.Screen
+        name="UserDrop"
+        component={UserDrop}
+        options={{
+          title: "계정 삭제하기",
+          headerBackImage: ({ tintColor }) => (
+            <Ionicons
+              color={tintColor}
+              name="ios-close"
+              size={30}
+              style={{ paddingLeft: 8 }}
+            />
+          ),
+        }}
       />
     </LoggeInStack.Navigator>
   );

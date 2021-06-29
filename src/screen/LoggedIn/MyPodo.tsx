@@ -6,7 +6,7 @@ import styled from "styled-components/native";
 import { Text, useTheme } from "../../theme/theme";
 import { useState } from "react";
 import { StackNavFactoryParamList } from "../../navigators/StackNavFactory";
-import instance, { TOKEN } from "../../../axios";
+import instance, { ID, TOKEN } from "../../../axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface IMyPodo {
@@ -104,7 +104,9 @@ function MyPodo({ navigation }: IMyPodo) {
   const getData = async () => {
     try {
       const token = await AsyncStorage.getItem(TOKEN);
-      return await instance.get(`/members/1`, {
+      const id = await AsyncStorage.getItem(ID);
+
+      return await instance.get(`/members/${id}`, {
         headers: {
           Authorization: token,
         },
@@ -132,7 +134,12 @@ function MyPodo({ navigation }: IMyPodo) {
       headerRight: () => (
         <TouchableOpacity
           style={{ marginRight: 20 }}
-          onPress={() => navigation.navigate("Setting")}
+          onPress={() =>
+            navigation.navigate("Setting", {
+              nickname,
+              memberId,
+            })
+          }
         >
           <FontAwesome name="cog" size={25} color={theme.theme.textColor} />
         </TouchableOpacity>

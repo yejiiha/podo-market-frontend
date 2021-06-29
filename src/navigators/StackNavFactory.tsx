@@ -26,7 +26,10 @@ export type StackNavFactoryParamList = {
     createdDate: string;
     memberId: number;
   };
-  Setting: undefined;
+  Setting?: {
+    nickname: string;
+    memberId: number;
+  };
   EditProfile: {
     nickname: string;
     memberId: number;

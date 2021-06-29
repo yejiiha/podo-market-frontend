@@ -45,6 +45,11 @@ export const Container = styled.View`
   color: ${(props) => props.theme.theme.textColor};
 `;
 
+export const View = styled.View`
+  flex: 1;
+  background-color: ${(props) => props.theme.theme.bgColor};
+`;
+
 export const Text = styled.Text`
   font-size: 16px;
   color: ${(props) => props.theme.theme.textColor};

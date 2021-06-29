@@ -4,10 +4,11 @@ import { IP_ADDRESS } from "react-native-dotenv";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const isLoggedInVar = makeVar(false);
-
+export const ID = "id";
 export const TOKEN = "token";
 
-export const logUserIn = async (token: string) => {
+export const logUserIn = async (token: string, id: number) => {
+  await AsyncStorage.setItem(ID, String(id));
   await AsyncStorage.setItem(TOKEN, token);
   isLoggedInVar(true);
 };
